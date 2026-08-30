@@ -62,8 +62,8 @@ The short version:
 
 ## Recommended Prerequisites
 
-- **Required:** Basic comfort reading code (any language). Willingness to learn Python basics as you go.
-- **Helpful, not required:** Familiarity with JSON, REST APIs, and using a command line.
+- **Required:** Basic comfort reading code (any language). Willingness to learn Python basics as you go — **[Module 0](00b-Module0-Python-Primer.md)** covers exactly the slice of Python this course needs, from scratch.
+- **Helpful, not required:** Familiarity with JSON, REST APIs, and using a command line (also covered in Module 0).
 - **Not required:** Machine learning math, statistics, or prior AI experience — all explained here.
 
 ## Recommended Tools & Technologies
@@ -83,6 +83,7 @@ The short version:
 
 | Part | Difficulty |
 |---|---|
+| Part 1 — Python Primer (Module 0) | Beginner |
 | Part 2 — Foundations | Beginner |
 | Part 3 — Intro to Agentic AI | Beginner |
 | Part 4 — Building Your First Agent | Beginner → Intermediate |
@@ -100,7 +101,7 @@ The short version:
 
 ```mermaid
 flowchart TD
-    A[Python Basics] --> B["LLM Fundamentals (Module 1-2)"]
+    A["Python Basics (Module 0)"] --> B["LLM Fundamentals (Module 1-2)"]
     B --> C["Prompt Engineering (Module 3)"]
     C --> D["What Is an Agent? (Module 4-5)"]
     D --> E["Simple AI Agents (Module 6)"]
@@ -119,16 +120,16 @@ flowchart TD
     style O fill:#dcfce7,stroke:#16a34a
 ```
 
-**How to read this graph:** each box is a stage of the course, and the arrows show the order you should learn them in — you can't skip ahead safely because later stages assume you understand the ones above (e.g., you can't understand RAG in Module 10 without first understanding embeddings in Module 9, which itself depends on knowing what memory even is from Module 8). The blue box is where everyone starts; the green box is the production-ready skill level you're building toward. Think of it as a single hiking trail up a mountain, not a menu you can pick items from — the whole point of the ordering is that each stage's difficulty is manageable *because* the previous stage already prepared you for it.
+**How to read this graph:** each box is a stage of the course, and the arrows show the order you should learn them in — you can't skip ahead safely because later stages assume you understand the ones above (e.g., you can't understand RAG in Module 10 without first understanding embeddings in Module 9, which itself depends on knowing what memory even is from Module 8). The blue box is where everyone starts — if Python is new to you, that box is **[Module 0, the Python Primer](00b-Module0-Python-Primer.md)**, not something you're expected to already know; if you already write Python comfortably, skim Module 0 for its JSON/API sections and move straight to Module 1. The green box is the production-ready skill level you're building toward. Think of it as a single hiking trail up a mountain, not a menu you can pick items from — the whole point of the ordering is that each stage's difficulty is manageable *because* the previous stage already prepared you for it.
 
 ## Difficulty Curve Across the Course
 
 ```mermaid
 xychart-beta
     title "Relative Difficulty by Part"
-    x-axis ["Foundations", "Intro to Agents", "First Agent", "Memory", "RAG", "Planning", "Frameworks", "Multi-Agent", "Advanced", "Eval", "Production"]
+    x-axis ["Python", "Foundations", "Intro to Agents", "First Agent", "Memory", "RAG", "Planning", "Frameworks", "Multi-Agent", "Advanced", "Eval", "Production"]
     y-axis "Difficulty (1=Beginner, 5=Advanced)" 1 --> 5
-    bar [1, 1, 2, 3, 3, 4, 3, 5, 5, 4, 5]
+    bar [1, 1, 1, 2, 3, 3, 4, 3, 5, 5, 4, 5]
 ```
 
 **How to read this graph:** the bars are not a smooth, ever-steepening climb — notice they dip back down at "Frameworks" (Module 13) even though it comes after "Planning" (Module 11-12). That's intentional: frameworks package up patterns you already learned by hand in earlier modules, so that module is more about *tooling* than new *concepts*, which is genuinely easier once the underlying ideas are already in your head. The two tallest bars — Multi-Agent Systems and Advanced Agent Systems (reliability, state, human-in-the-loop) — are where most of the real engineering difficulty in production agentic AI actually lives, so budget extra time there rather than assuming difficulty rises in lockstep with module number.

@@ -3,8 +3,8 @@
 ## Phase 1 — Foundations (Week 1–2)
 
 Learn:
-- Python basics (variables, functions, loops, dictionaries, JSON handling).
-- APIs and JSON (making HTTP requests, parsing responses).
+- Python basics (Module 0): variables, functions, loops, dictionaries, JSON handling, classes.
+- APIs and JSON (Module 0.6–0.7): making HTTP requests, parsing responses.
 - LLM basics (Modules 1–2): tokens, context windows, training vs. inference.
 
 Deliverable: comfortably make an API call to an LLM and parse a structured JSON response.
@@ -95,79 +95,58 @@ Build the **AI Business Automation Agent Platform** (Module 24), phase by phase 
 
 # Final Roadmap (Visual)
 
-```text
-Python Basics
-     ↓
-LLM Fundamentals (tokens, context, training/inference, temperature)
-     ↓
-Prompt Engineering (system/user prompts, few-shot, templates, injection)
-     ↓
-What Is an Agent? (goal-driven loop vs. chatbot/workflow)
-     ↓
-Basic Agent Architecture (brain, tools, state, memory, environment, loop)
-     ↓
-Tool Calling (schemas, execution, error handling)
-     ↓
-Memory (short-term, long-term, semantic, episodic)
-     ↓
-Vector Databases & Embeddings (similarity search, chunking)
-     ↓
-Retrieval-Augmented Generation (beginner → production RAG)
-     ↓
-Planning (decomposition, dynamic replanning)
-     ↓
-Reasoning Patterns (ReAct, plan-and-execute, reflection, critique, tree search)
-     ↓
-Agent Frameworks (LangChain, LangGraph, CrewAI, AutoGen, Semantic Kernel, SDKs)
-     ↓
-Multi-Agent Systems (specialization, delegation, communication)
-     ↓
-Multi-Agent Design Patterns (supervisor, hierarchical, pipeline, debate, critic, router)
-     ↓
-State Management (session vs. persistent, checkpointing/recovery)
-     ↓
-Reliability (hallucination, loops, tool failures, guardrails)
-     ↓
-Human-in-the-Loop (risk-tiered approval gates)
-     ↓
-Evaluation (task success, tool accuracy, cost, latency, test datasets)
-     ↓
-Deployment (architecture, auth, logging, monitoring, scaling)
-     ↓
-Security (prompt injection, data leakage, tool abuse, API key protection)
-     ↓
-Cost Optimization (model tiering, caching, batching)
-     ↓
-PRODUCTION AGENT SYSTEMS (Capstone)
+```mermaid
+flowchart TD
+    P0["Python Basics (Module 0)"] --> M2["LLM Fundamentals (Module 1-2)"]
+    M2 --> M3["Prompt Engineering (Module 3)"]
+    M3 --> M4["What Is an Agent? (Module 4-5)"]
+    M4 --> M6["Basic Agent Architecture (Module 6)"]
+    M6 --> M7["Tool Calling (Module 7)"]
+    M7 --> M8["Memory (Module 8)"]
+    M8 --> M9["Vector Databases & Embeddings (Module 9)"]
+    M9 --> M10["Retrieval-Augmented Generation (Module 10)"]
+    M10 --> M11["Planning (Module 11)"]
+    M11 --> M12["Reasoning Patterns (Module 12)"]
+    M12 --> M13["Agent Frameworks (Module 13)"]
+    M13 --> M14["Multi-Agent Systems (Module 14)"]
+    M14 --> M15["Multi-Agent Design Patterns (Module 15)"]
+    M15 --> M16["State Management (Module 16)"]
+    M16 --> M17["Reliability (Module 17)"]
+    M17 --> M18["Human-in-the-Loop (Module 18)"]
+    M18 --> M19["Evaluation (Module 19)"]
+    M19 --> M20["Deployment (Module 20)"]
+    M20 --> M21["Security (Module 21)"]
+    M21 --> M22["Cost Optimization (Module 22)"]
+    M22 --> CAP(["PRODUCTION AGENT SYSTEMS (Capstone)"])
+
+    style P0 fill:#e0e7ff,stroke:#4338ca
+    style CAP fill:#dcfce7,stroke:#16a34a
 ```
+
+**How to read this graph:** this is the same single-trail shape as the roadmap in `00-Course-Overview.md`, just spelled out module by module instead of by course part — use it as the detailed map once you're ready to start, and the overview version when you just want the big picture. Starting at the blue "Python Basics" box is not optional scaffolding — every downstream box's code examples assume you can read the Python patterns from Module 0 (dictionaries, `while` loops, JSON, API calls).
 
 ---
 
 # Technology Roadmap
 
-```text
-Python
-   ↓
-APIs + JSON
-   ↓
-LLMs (an LLM provider API)
-   ↓
-Prompt Engineering
-   ↓
-Tool Calling
-   ↓
-Vector Database (Chroma / FAISS / Pinecone / Qdrant)
-   ↓
-RAG
-   ↓
-Agent Framework (LangGraph / CrewAI / AutoGen / a thin native SDK)
-   ↓
-Multi-Agent Systems
-   ↓
-Evaluation Tooling (test datasets, LLM-as-judge)
-   ↓
-Deployment (FastAPI, Docker, a cloud provider, a task queue)
+```mermaid
+flowchart TD
+    Py["Python (Module 0)"] --> API["APIs + JSON (Module 0.6-0.7)"]
+    API --> LLM["LLMs (an LLM provider API)"]
+    LLM --> PE[Prompt Engineering]
+    PE --> TC[Tool Calling]
+    TC --> VDB["Vector Database (Chroma / FAISS / Pinecone / Qdrant)"]
+    VDB --> RAG[RAG]
+    RAG --> FW["Agent Framework (LangGraph / CrewAI / AutoGen / a thin native SDK)"]
+    FW --> MA[Multi-Agent Systems]
+    MA --> EV["Evaluation Tooling (test datasets, LLM-as-judge)"]
+    EV --> DEP["Deployment (FastAPI, Docker, a cloud provider, a task queue)"]
+
+    style Py fill:#e0e7ff,stroke:#4338ca
+    style DEP fill:#dcfce7,stroke:#16a34a
 ```
+
+**How to read this graph:** unlike the "Final Roadmap" above (which lists *concepts*, one per module), this chart lists *concrete technology choices* you'll actually install and configure — Python is still the very first box for the same reason: it's the language every other box's tooling (an LLM SDK, a vector database client, a web framework) is written for and installed into via `pip` (Module 0.8).
 
 ---
 
@@ -175,6 +154,7 @@ Deployment (FastAPI, Docker, a cloud provider, a task queue)
 
 After completing this course, you should be able to:
 
+- [ ] Read and write the core Python patterns used throughout this course: dictionaries/JSON, functions, `while`/`for` loops, simple classes, and HTTP API calls.
 - [ ] Explain what an LLM is, how tokens/context windows work, and why hallucination happens.
 - [ ] Write production-quality prompts with clear roles, scope, format, and refusal behavior.
 - [ ] Clearly distinguish a chatbot, a workflow, and an agent, and choose the right one for a given problem.

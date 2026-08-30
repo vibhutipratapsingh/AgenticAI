@@ -14,6 +14,7 @@ Each numbered file is a self-contained module. Read them in order the first time
 | # | File | Part | Difficulty |
 |---|------|------|------------|
 | 00 | [00-Course-Overview.md](00-Course-Overview.md) | Course Overview & Roadmap | — |
+| 0 | [00b-Module0-Python-Primer.md](00b-Module0-Python-Primer.md) | Python Primer (the roadmap's "Python Basics" step) | Beginner |
 | 01 | [01-Module1-Intro-to-AI.md](01-Module1-Intro-to-AI.md) | Foundations | Beginner |
 | 02 | [02-Module2-Understanding-LLMs.md](02-Module2-Understanding-LLMs.md) | Foundations | Beginner |
 | 03 | [03-Module3-Prompt-Engineering.md](03-Module3-Prompt-Engineering.md) | Foundations | Beginner |
@@ -46,7 +47,7 @@ Each numbered file is a self-contained module. Read them in order the first time
 ## Visual Learning Roadmap
 
 ```text
-Python Basics
+Python Basics               (Module 0)
      ↓
 LLM Fundamentals
      ↓
@@ -75,4 +76,4 @@ Deployment, Security, Cost
 Production Agent Systems (Capstone)
 ```
 
-Start at `00-Course-Overview.md`.
+Start at **[00b-Module0-Python-Primer.md](00b-Module0-Python-Primer.md)** if you're new to Python, or `00-Course-Overview.md` if you already know it.
