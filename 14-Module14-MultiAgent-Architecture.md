@@ -36,18 +36,20 @@ A single agent juggling many responsibilities (research, writing, fact-checking,
 
 ### Visual Diagram
 
-```text
-                    Supervisor Agent
-                           │
-        ┌──────────────────┼──────────────────┐
-        ▼                  ▼                  ▼
-  Researcher Agent    Writer Agent       Reviewer Agent
-  (search tools)      (drafting)         (quality checks)
-        │                  │                  │
-        └──────────────────┼──────────────────┘
-                           ▼
-                     Final Output
+```mermaid
+flowchart TD
+    Sup["Supervisor Agent"] --> Res["Researcher Agent<br/>(search tools)"]
+    Sup --> Wri["Writer Agent<br/>(drafting)"]
+    Sup --> Rev["Reviewer Agent<br/>(quality checks)"]
+    Res --> Out([Final Output])
+    Wri --> Out
+    Rev --> Out
+
+    style Sup fill:#fce7f3,stroke:#be185d
+    style Out fill:#dcfce7,stroke:#16a34a
 ```
+
+**How to read this graph:** the pink Supervisor box is the only node that talks to all three specialists — the specialists don't necessarily talk to each other directly, they report through the supervisor and their outputs converge back into one "Final Output." This star-shaped ("hub and spoke") structure is exactly what makes supervisor-pattern systems easy to reason about: if something goes wrong, you know to look at either one specialist's output or the supervisor's coordination logic, not a tangle of every-agent-talks-to-every-agent connections.
 
 ---
 
@@ -67,21 +69,29 @@ A single agent juggling many responsibilities (research, writing, fact-checking,
 
 ### Communication Flow
 
-```text
-Supervisor: "Research renewable energy trends for 2026."
-   ↓
-Research Agent → produces: {notes: [...], sources: [...]}
-   ↓ (Supervisor passes notes to Writer)
-Writer Agent → produces: draft_article (text)
-   ↓ (Supervisor passes draft to SEO Agent)
-SEO Agent → produces: seo_optimized_draft
-   ↓ (Supervisor passes draft + original sources to Fact Checker)
-Fact Checker Agent → produces: {flags: [{claim: "...", status: "unverified"}]}
-   ↓ (Supervisor passes draft + flags to Editor)
-Editor Agent → produces: final_article
-   ↓
-Supervisor: returns final_article to user
+```mermaid
+sequenceDiagram
+    participant S as Supervisor
+    participant R as Research Agent
+    participant W as Writer Agent
+    participant SEO as SEO Agent
+    participant FC as Fact Checker
+    participant E as Editor Agent
+
+    S->>R: "Research renewable energy trends for 2026"
+    R-->>S: {notes, sources}
+    S->>W: notes
+    W-->>S: draft_article
+    S->>SEO: draft_article
+    SEO-->>S: seo_optimized_draft
+    S->>FC: draft + sources
+    FC-->>S: {flags: [...]}
+    S->>E: draft + flags
+    E-->>S: final_article
+    S-->>S: return final_article to user
 ```
+
+**How to read this graph:** every specialist agent only ever talks to the Supervisor — notice there's no arrow directly connecting, say, the Research Agent to the Editor Agent. The Supervisor is a relay: it takes one agent's output, decides what the *next* agent needs from it, and forwards exactly that (not everything). This is why careful hand-off design matters so much in this pattern — if the Supervisor forwarded the Research Agent's raw notes to the Editor instead of the final draft, the Editor would be reviewing the wrong artifact entirely.
 
 ### Practical Example (Conceptual Python Skeleton)
 

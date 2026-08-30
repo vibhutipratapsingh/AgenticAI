@@ -27,17 +27,20 @@ Modules 1–16.
 
 ## Lesson 17.2 — The General Solution Loop
 
-```text
-Problem
-   ↓
-Detection      (how do we know something went wrong?)
-   ↓
-Fallback       (what do we do instead of just failing outright?)
-   ↓
-Retry          (can we just try again, possibly differently?)
-   ↓
-Alternative Strategy   (if retry fails repeatedly, try a genuinely different approach)
+```mermaid
+flowchart TD
+    P([Problem]) --> D{Detection:<br/>how do we know<br/>something's wrong?}
+    D --> F[Fallback:<br/>don't just fail outright]
+    F --> R{Retry:<br/>try again,<br/>possibly differently}
+    R -- succeeds --> Done([Continue normally])
+    R -- fails repeatedly --> Alt[Alternative Strategy:<br/>a genuinely different approach]
+
+    style P fill:#fee2e2,stroke:#dc2626
+    style Done fill:#dcfce7,stroke:#16a34a
+    style Alt fill:#fef3c7,stroke:#d97706
 ```
+
+**How to read this graph:** this is a decision funnel, not a straight pipeline — notice "Retry" has two exits. Most failures should resolve at the cheap "Retry" step (a network blip fixed by trying again); only failures that survive repeated retries should escalate all the way to "Alternative Strategy," which is the most expensive, most disruptive branch. A common mistake this graph makes visible: if your code jumps straight from "Problem" to "Alternative Strategy" without ever trying the cheaper Detection → Fallback → Retry path first, you're over-reacting to what might have been a one-off blip.
 
 ---
 

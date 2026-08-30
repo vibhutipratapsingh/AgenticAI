@@ -217,6 +217,29 @@ Long-form content generation, complex reports, iterative code development.
 | Tree-Based Exploration | Risk of committing to one bad path early | High | Complex problems with multiple strategies |
 | Iterative Improvement | Getting large outputs right in one pass | Medium-high | Long-form content, complex code |
 
+```mermaid
+xychart-beta
+    title "Relative Cost vs. Relative Rigor of Each Pattern"
+    x-axis ["ReAct", "Plan-and-Execute", "Reflection", "Critique & Revise", "Tree-Based", "Iterative Improvement"]
+    y-axis "Relative Cost (LLM calls per task)" 0 --> 5
+    bar [1, 2, 2, 3, 5, 4]
+```
+
+**How to read this graph:** the bars are a rough proxy for how many LLM calls each pattern burns through for a comparable task, which is why ReAct — think-then-act one step at a time — sits at the cheap end, while Tree-Based Exploration sits at the expensive end, since it evaluates multiple candidate paths instead of committing to just one. Use this chart as a quick sanity check before reaching for a fancy pattern: if the tallest bars (Tree-Based, Iterative Improvement) don't clearly pay for themselves in better output quality for your specific task, the cheaper bars on the left are very likely the better engineering choice.
+
+### The ReAct Loop, Visualized
+
+```mermaid
+flowchart LR
+    Th1[Thought] --> Ac1[Action] --> Ob1[Observation] --> Th2[Thought] --> Ac2[Action] --> Ob2[Observation] --> F([Final Answer])
+
+    style Th1 fill:#e0e7ff,stroke:#4338ca
+    style Th2 fill:#e0e7ff,stroke:#4338ca
+    style F fill:#dcfce7,stroke:#16a34a
+```
+
+**How to read this graph:** unlike the plan-and-execute pattern below, ReAct never writes out a full multi-step plan up front — each "Thought" box only looks one step ahead, immediately triggers one "Action," reads the resulting "Observation," and only *then* decides what to think about next. That tight, one-step-at-a-time rhythm is what makes ReAct cheap and simple, but it's also why it can take inefficient detours on tasks that really did have a clean multi-step structure knowable in advance.
+
 ### Common Mistakes
 - Using an expensive pattern (tree-based exploration, multi-round critique) for a simple task where ReAct alone would suffice — wastes cost and latency.
 - Never setting a maximum iteration/round count for reflection or critique loops — risks infinite refinement loops (Module 17).

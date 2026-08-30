@@ -13,13 +13,15 @@ Module 14.
 
 ## Pattern 1 — Supervisor Pattern
 
-```text
-              Supervisor
-                  │
-     ┌────────────┼────────────┐
-     ▼            ▼            ▼
- Agent A       Agent B      Agent C
+```mermaid
+flowchart TD
+    S[Supervisor] --> A[Agent A]
+    S --> B[Agent B]
+    S --> C[Agent C]
+    style S fill:#fce7f3,stroke:#be185d
 ```
+
+*One hub, several spokes — every specialist reports only to the Supervisor.*
 
 **Example:** A supervisor agent receives a customer query, decides whether to route it to a Billing Agent, Technical Support Agent, or Returns Agent, then relays the answer back.
 
@@ -31,17 +33,20 @@ Module 14.
 
 ## Pattern 2 — Hierarchical Agents
 
-```text
-                 Top-Level Supervisor
-                        │
-         ┌──────────────┴──────────────┐
-         ▼                             ▼
-   Mid-Level Supervisor A        Mid-Level Supervisor B
-         │                             │
-   ┌─────┴─────┐                 ┌─────┴─────┐
-   ▼           ▼                 ▼           ▼
-Agent A1    Agent A2          Agent B1    Agent B2
+```mermaid
+flowchart TD
+    Top[Top-Level Supervisor] --> MA[Mid-Level Supervisor A]
+    Top --> MB[Mid-Level Supervisor B]
+    MA --> A1[Agent A1]
+    MA --> A2[Agent A2]
+    MB --> B1[Agent B1]
+    MB --> B2[Agent B2]
+    style Top fill:#fce7f3,stroke:#be185d
+    style MA fill:#fef3c7,stroke:#d97706
+    style MB fill:#fef3c7,stroke:#d97706
 ```
+
+*A supervisor of supervisors — the top level never talks to the leaf agents directly, only to its two mid-level delegates.*
 
 **Example:** A company automation platform with a top-level supervisor delegating to a "Marketing" sub-supervisor (which manages Content and SEO agents) and a "Sales" sub-supervisor (which manages Lead-Qualification and Outreach agents).
 
@@ -53,11 +58,19 @@ Agent A1    Agent A2          Agent B1    Agent B2
 
 ## Pattern 3 — Peer-to-Peer Agents
 
-```text
-   Agent A ⇄ Agent B
-      ⇅         ⇅
-   Agent C ⇄ Agent D
+```mermaid
+flowchart LR
+    A[Agent A] <--> B[Agent B]
+    A <--> C[Agent C]
+    B <--> D[Agent D]
+    C <--> D
+    style A fill:#fee2e2,stroke:#dc2626
+    style B fill:#fee2e2,stroke:#dc2626
+    style C fill:#fee2e2,stroke:#dc2626
+    style D fill:#fee2e2,stroke:#dc2626
 ```
+
+*No hub at all — every agent can talk to every other agent, which is exactly why this pattern is the hardest to predict and debug (there's no single node you can watch to understand the whole conversation).*
 
 **Example:** A group of specialist agents (e.g., a Frontend Agent and a Backend Agent) directly negotiate an API contract with each other without a central coordinator, converging on agreement.
 
@@ -69,9 +82,13 @@ Agent A1    Agent A2          Agent B1    Agent B2
 
 ## Pattern 4 — Pipeline Architecture
 
-```text
-Agent 1 → Agent 2 → Agent 3 → Agent 4 → Output
+```mermaid
+flowchart LR
+    A1[Agent 1] --> A2[Agent 2] --> A3[Agent 3] --> A4[Agent 4] --> Out([Output])
+    style Out fill:#dcfce7,stroke:#16a34a
 ```
+
+*A straight, one-directional line — no branches, no loops back. Simple to follow, but rigid if an earlier stage needs revisiting.*
 
 **Example:** The AI Content Team from Module 14 (Research → Write → SEO → Fact-Check → Edit) is a pipeline — strict, fixed sequential hand-off.
 
@@ -83,17 +100,17 @@ Agent 1 → Agent 2 → Agent 3 → Agent 4 → Output
 
 ## Pattern 5 — Debate Architecture
 
-```text
-        Question / Proposal
-               │
-   ┌───────────┴───────────┐
-   ▼                       ▼
-Agent A (Position 1)   Agent B (Position 2)
-   │                       │
-   └───────────┬───────────┘
-               ▼
-        Judge Agent decides
+```mermaid
+flowchart TD
+    Q([Question / Proposal]) --> A[Agent A: Position 1]
+    Q --> B[Agent B: Position 2]
+    A --> J[Judge Agent decides]
+    B --> J
+    style Q fill:#e0e7ff,stroke:#4338ca
+    style J fill:#fef3c7,stroke:#d97706
 ```
+
+*Two agents deliberately argue opposite sides before a third agent judges — the diamond-then-triangle shape (split, then rejoin at the Judge) is what forces both viewpoints onto the table before a decision is made.*
 
 **Example:** Two agents argue opposing interpretations of an ambiguous contract clause; a Judge agent evaluates both arguments and produces a final recommendation, citing which points were more convincing.
 
@@ -105,9 +122,17 @@ Agent A (Position 1)   Agent B (Position 2)
 
 ## Pattern 6 — Critic Architecture
 
-```text
-Producer Agent → Draft → Critic Agent → Feedback → Producer Agent (revise) → ...
+```mermaid
+flowchart LR
+    P[Producer Agent] -- Draft --> C[Critic Agent]
+    C -- Feedback --> P
+    P -- "Revised Draft (repeat until approved or round limit)" --> Done([Final Output])
+
+    style C fill:#fef3c7,stroke:#d97706
+    style Done fill:#dcfce7,stroke:#16a34a
 ```
+
+*Notice the loop between Producer and Critic — this is the same kind of loop-back you saw in the agent loop in Module 4, just with two agents instead of one agent talking to itself. It must have a round limit, or it can spin forever (Module 17).*
 
 **Example:** A code-generation agent produces code; a dedicated Critic agent checks it against requirements and style rules, returning specific issues; the Producer revises until the Critic approves or a round limit is hit.
 
@@ -119,16 +144,18 @@ Producer Agent → Draft → Critic Agent → Feedback → Producer Agent (revis
 
 ## Pattern 7 — Router Architecture
 
-```text
-        Incoming Request
-               │
-        Router Agent (classifies request type)
-               │
-   ┌───────────┼───────────┐
-   ▼           ▼           ▼
-Agent A     Agent B     Agent C
-(only ONE selected, not delegated to all)
+```mermaid
+flowchart TD
+    R([Incoming Request]) --> Cl{Router Agent<br/>classifies request type}
+    Cl -- "only ONE path taken" --> A[Agent A]
+    Cl -.not taken.-> B[Agent B]
+    Cl -.not taken.-> C[Agent C]
+
+    style Cl fill:#fef3c7,stroke:#d97706
+    style A fill:#dcfce7,stroke:#16a34a
 ```
+
+*The dotted lines mark the paths NOT taken — unlike the Supervisor pattern (Pattern 1), where all specialists can potentially be invoked, a Router sends the request down exactly one solid path and nowhere else.*
 
 **Example:** An incoming support ticket is routed to exactly one of: Billing Agent, Bug Report Agent, or Feature Request Agent, based on classification — no further coordination is needed after routing.
 
@@ -149,6 +176,17 @@ Agent A     Agent B     Agent C
 | Debate | Adversarial + judge | High | Medium | Ambiguous, high-stakes judgment calls |
 | Critic | Iterative producer/reviewer | Medium-High | High | Quality-critical single-artifact production |
 | Router | Classify-then-dispatch | Low | High | Clearly distinct request categories |
+
+```mermaid
+xychart-beta
+    title "Cost vs. Debuggability by Pattern (5 = highest)"
+    x-axis ["Supervisor", "Hierarchical", "Peer-to-Peer", "Pipeline", "Debate", "Critic", "Router"]
+    y-axis "Relative Score (1-5)" 0 --> 5
+    bar [3, 4, 5, 2, 5, 4, 1]
+    line [4, 3, 1, 5, 3, 4, 5]
+```
+
+**How to read this graph:** the bars show relative *cost* and the line shows relative *debuggability* for each pattern, side by side. The pattern to watch is Peer-to-Peer: it has the tallest bar (most expensive/unpredictable) paired with the lowest point on the line (hardest to debug) — the worst combination on the chart, which is exactly why the module text calls it "rare in production." Router sits at the opposite corner: cheapest bar, highest debuggability point — the easy, safe default whenever your request categories are genuinely distinct.
 
 ### Common Mistakes
 - Choosing Peer-to-Peer or Debate patterns by default because they sound sophisticated — they're expensive and hard to control; reserve them for cases that specifically need adversarial or negotiated reasoning.

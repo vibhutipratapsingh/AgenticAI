@@ -16,24 +16,21 @@ Modules 1–5.
 
 ### Concept Explanation
 
-```text
-User Goal
-    ↓
-Agent
- ┌────────────────────────┐
- │      LLM / Brain       │  ← reasons about what to do next
- └────────────────────────┘
-    ↓
-Decision                      ← "I need to search for X" / "I have enough info to answer"
-    ↓
-Tool Selection                ← which tool fits this decision
-    ↓
-Tool Execution                ← the tool actually runs (API call, calculation, file read...)
-    ↓
-Observation                   ← the tool's result is fed back in
-    ↓
-Next Decision (loop back to Brain)
+```mermaid
+flowchart TD
+    UG([User Goal]) --> Brain["LLM / Brain<br/>(reasons about what to do next)"]
+    Brain --> Decision["Decision<br/>e.g. 'I need to search for X'<br/>or 'I have enough info to answer'"]
+    Decision --> ToolSel[Tool Selection]
+    ToolSel --> ToolExec["Tool Execution<br/>(API call, calculation, file read...)"]
+    ToolExec --> Obs[Observation:<br/>result fed back in]
+    Obs --> Brain
+
+    style UG fill:#e0e7ff,stroke:#4338ca
+    style Brain fill:#fce7f3,stroke:#be185d
+    style Obs fill:#fef3c7,stroke:#d97706
 ```
+
+**How to read this graph:** the pink "Brain" box is the only box that actually reasons — every other box is plain, predictable code around it. Follow the arrows clockwise: a goal comes in once, but from there the diagram is a cycle, not a line — the "Observation" box always feeds back into the "Brain" box, which is what lets the agent make its *next* decision using what it just learned, rather than blindly running a fixed script. If you're building this in code, everything except the pink box can be ordinary functions; the pink box is the only part that needs an LLM call.
 
 - **Agent brain**: the LLM itself — reasons over the current state and decides the next action.
 - **Instructions**: the system prompt defining the agent's role, rules, and boundaries (Module 3).

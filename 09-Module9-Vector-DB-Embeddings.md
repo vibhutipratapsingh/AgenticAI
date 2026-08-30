@@ -25,24 +25,25 @@ An **embedding** is a way of converting text (a word, sentence, or document) int
 
 ### Visual Diagram
 
-```text
-                       MEANING MAP (simplified to 2D)
-
-    AI / ML Topics
-           ●  "neural networks"
-        ●        ●  "machine learning models"
-     "LLMs"
-
-                                          Cooking Topics
-                                                 ●  "pizza recipes"
-                                             ●  "how to bake bread"
-
-                                                              Sports Topics
-                                                                     ●  "football scores"
-                                                                 ●  "basketball highlights"
+```mermaid
+quadrantChart
+    title Meaning Map (simplified to 2D)
+    x-axis Low --> High
+    y-axis Low --> High
+    quadrant-1 AI / ML Topics
+    quadrant-2 Sports Topics
+    quadrant-3 Cooking Topics
+    quadrant-4 (unused)
+    "neural networks": [0.75, 0.8]
+    "LLMs": [0.7, 0.65]
+    "machine learning models": [0.85, 0.7]
+    "pizza recipes": [0.25, 0.2]
+    "how to bake bread": [0.3, 0.3]
+    "football scores": [0.75, 0.25]
+    "basketball highlights": [0.8, 0.3]
 ```
 
-In reality, embeddings have hundreds or thousands of dimensions — far more than 2D — but the "closeness = similar meaning" principle is exactly the same.
+**How to read this graph:** each dot is one piece of text, plotted purely by *meaning* — the x and y axes have no real-world unit (they're two of the hundreds or thousands of dimensions a real embedding model uses, squashed down to 2D so we can draw it). What matters is the clustering: the three AI/ML phrases land close together in the top area, the two cooking phrases cluster together near the bottom-left, and the two sports phrases cluster together on the right — even though, for example, "neural networks" and "machine learning models" share almost no exact words. Distance on this map *is* the similarity score (Lesson 9.2) — a vector database's whole job is finding the dots nearest to your query's dot. In reality, embeddings have hundreds or thousands of dimensions — far more than 2D — but the "closeness = similar meaning" principle is exactly the same.
 
 ---
 
@@ -55,21 +56,23 @@ In reality, embeddings have hundreds or thousands of dimensions — far more tha
 
 ### Visual Diagram
 
+```mermaid
+xychart-beta
+    title "Similarity Score of Each Stored Document vs. the Query"
+    x-axis ["Doc A", "Doc B", "Doc C", "Doc D"]
+    y-axis "Cosine Similarity" 0 --> 1
+    bar [0.89, 0.31, 0.85, 0.05]
+```
+
 ```text
 User Question: "How do I reset my password?"
         ↓ (embedding model)
    Query Vector: [0.12, -0.44, 0.91, ...]
         ↓ (similarity search against stored vectors)
-Vector Database
- ┌───────────────────────────────────────────┐
- │ Doc A vector  (similarity: 0.89) ← MATCH   │
- │ Doc B vector  (similarity: 0.31)           │
- │ Doc C vector  (similarity: 0.85) ← MATCH   │
- │ Doc D vector  (similarity: 0.05)           │
- └───────────────────────────────────────────┘
-        ↓
-   Top matches returned: Doc A, Doc C
+   Top matches returned: Doc A (0.89), Doc C (0.85)
 ```
+
+**How to read this graph:** the bar chart shows the exact same numbers as the flow underneath it, just made easier to compare at a glance — a cosine similarity score of 1.0 would mean "identical meaning" and 0.0 would mean "completely unrelated." Doc A and Doc C both clear the 0.85 range, visibly taller than Doc B and Doc D, which is why the system returns those two as the "top matches" even though the user's question ("How do I reset my password?") doesn't share a single exact word with either document's title. This is the mechanical core of every semantic search and RAG system in this course: embed, score every candidate with a bar like this, keep the tallest ones.
 
 ### Practical Example (Conceptual Python)
 

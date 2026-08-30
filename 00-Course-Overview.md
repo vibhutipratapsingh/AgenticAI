@@ -98,36 +98,39 @@ The short version:
 
 ## Complete Learning Roadmap (Visual)
 
-```text
-Python Basics
-     ↓
-LLM Fundamentals            (Module 1-2)
-     ↓
-Prompt Engineering          (Module 3)
-     ↓
-What Is an Agent?           (Module 4-5)
-     ↓
-Simple AI Agents            (Module 6)
-     ↓
-Tool Calling                (Module 7)
-     ↓
-Memory                      (Module 8-9)
-     ↓
-RAG                         (Module 10)
-     ↓
-Planning & Reasoning        (Module 11-12)
-     ↓
-Agent Frameworks            (Module 13)
-     ↓
-Multi-Agent Systems         (Module 14-15)
-     ↓
-State, Reliability, HITL    (Module 16-18)
-     ↓
-Evaluation                  (Module 19)
-     ↓
-Deployment, Security, Cost  (Module 20-22)
-     ↓
-Production Agent Systems    (Projects + Capstone)
+```mermaid
+flowchart TD
+    A[Python Basics] --> B["LLM Fundamentals (Module 1-2)"]
+    B --> C["Prompt Engineering (Module 3)"]
+    C --> D["What Is an Agent? (Module 4-5)"]
+    D --> E["Simple AI Agents (Module 6)"]
+    E --> F["Tool Calling (Module 7)"]
+    F --> G["Memory (Module 8-9)"]
+    G --> H["RAG (Module 10)"]
+    H --> I["Planning & Reasoning (Module 11-12)"]
+    I --> J["Agent Frameworks (Module 13)"]
+    J --> K["Multi-Agent Systems (Module 14-15)"]
+    K --> L["State, Reliability, HITL (Module 16-18)"]
+    L --> M["Evaluation (Module 19)"]
+    M --> N["Deployment, Security, Cost (Module 20-22)"]
+    N --> O["Production Agent Systems (Projects + Capstone)"]
+
+    style A fill:#e0e7ff,stroke:#4338ca
+    style O fill:#dcfce7,stroke:#16a34a
 ```
+
+**How to read this graph:** each box is a stage of the course, and the arrows show the order you should learn them in — you can't skip ahead safely because later stages assume you understand the ones above (e.g., you can't understand RAG in Module 10 without first understanding embeddings in Module 9, which itself depends on knowing what memory even is from Module 8). The blue box is where everyone starts; the green box is the production-ready skill level you're building toward. Think of it as a single hiking trail up a mountain, not a menu you can pick items from — the whole point of the ordering is that each stage's difficulty is manageable *because* the previous stage already prepared you for it.
+
+## Difficulty Curve Across the Course
+
+```mermaid
+xychart-beta
+    title "Relative Difficulty by Part"
+    x-axis ["Foundations", "Intro to Agents", "First Agent", "Memory", "RAG", "Planning", "Frameworks", "Multi-Agent", "Advanced", "Eval", "Production"]
+    y-axis "Difficulty (1=Beginner, 5=Advanced)" 1 --> 5
+    bar [1, 1, 2, 3, 3, 4, 3, 5, 5, 4, 5]
+```
+
+**How to read this graph:** the bars are not a smooth, ever-steepening climb — notice they dip back down at "Frameworks" (Module 13) even though it comes after "Planning" (Module 11-12). That's intentional: frameworks package up patterns you already learned by hand in earlier modules, so that module is more about *tooling* than new *concepts*, which is genuinely easier once the underlying ideas are already in your head. The two tallest bars — Multi-Agent Systems and Advanced Agent Systems (reliability, state, human-in-the-loop) — are where most of the real engineering difficulty in production agentic AI actually lives, so budget extra time there rather than assuming difficulty rises in lockstep with module number.
 
 Continue to **[01-Module1-Intro-to-AI.md](01-Module1-Intro-to-AI.md)**.

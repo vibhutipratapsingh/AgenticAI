@@ -34,24 +34,22 @@ The defining trait is the **loop**: think → act → observe → think again, r
 
 ### The Agent Loop
 
-```text
-Goal
- ↓
-Observe     (What do I currently know? What just happened?)
- ↓
-Think       (What does this mean? What's still missing?)
- ↓
-Plan        (What should I do next to move toward the goal?)
- ↓
-Act         (Use a tool / take an action)
- ↓
-Check Result (Did that work? Did it get me closer to the goal?)
- ↓
-Continue ──────┐
-  │            │
-  ↓ (not done) │ (done)
- back to Observe   Finish → report result
+```mermaid
+flowchart TD
+    Goal([Goal]) --> Observe[Observe:<br/>What do I know?<br/>What just happened?]
+    Observe --> Think[Think:<br/>What does this mean?<br/>What's missing?]
+    Think --> Plan[Plan:<br/>What's the next step?]
+    Plan --> Act[Act:<br/>Use a tool / take an action]
+    Act --> Check{Check Result:<br/>Did it work? Closer to goal?}
+    Check -- Not done yet --> Observe
+    Check -- Goal met --> Finish([Finish:<br/>Report result])
+
+    style Goal fill:#e0e7ff,stroke:#4338ca
+    style Finish fill:#dcfce7,stroke:#16a34a
+    style Check fill:#fef3c7,stroke:#d97706
 ```
+
+**How to read this graph:** this is a loop, not a straight line — notice the arrow from the "Check Result" diamond back up to "Observe." That loop-back is the single most important feature of this diagram: it's what lets an agent try again, gather more information, or take a different action when its first attempt doesn't fully solve the goal. A regular program (or a chatbot) would just stop after one pass through the top-to-bottom boxes; an agent keeps circling through Observe → Think → Plan → Act → Check until the diamond finally routes it out to "Finish." The yellow diamond is the agent's one and only exit decision point — everything before it can repeat indefinitely (up to a safety limit, covered in Module 6 and Module 17), but this is the only place the agent decides "am I done or not."
 
 ### Explaining Each Stage
 

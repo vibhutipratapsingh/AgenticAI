@@ -29,34 +29,27 @@ LLMs only "know" what was in their training data, frozen at a knowledge cutoff d
 
 ### Visual Diagram
 
-```text
-INGESTION (done ahead of time, whenever documents change)
+```mermaid
+flowchart TB
+    subgraph Ingest["INGESTION (done ahead of time, whenever documents change)"]
+        direction LR
+        D[Documents] --> Ch[Chunking] --> Em[Embeddings] --> VDB[(Vector Database)]
+    end
 
-Documents
-    ↓
-Chunking
-    ↓
-Embeddings
-    ↓
-Vector Database
+    subgraph Query["QUERY TIME (done for every user question)"]
+        direction LR
+        Q([User Question]) --> QE[Embedding] --> SS[Similarity Search]
+        SS --> RD[Relevant Chunks] --> CI[Context Injection<br/>into the Prompt] --> LLM[LLM] --> Ans([Answer])
+    end
 
+    VDB -.searched by.-> SS
 
-QUERY TIME (done for every user question)
-
-User Question
-    ↓
-Embedding
-    ↓
-Similarity Search  (against the Vector Database above)
-    ↓
-Relevant Documents (chunks)
-    ↓
-Context Injection into the Prompt
-    ↓
-LLM
-    ↓
-Answer (grounded in retrieved documents)
+    style D fill:#e0e7ff,stroke:#4338ca
+    style Ans fill:#dcfce7,stroke:#16a34a
+    style VDB fill:#fef3c7,stroke:#d97706
 ```
+
+**How to read this graph:** this diagram is really two separate pipelines that happen at very different times, joined by one dotted arrow. The top row (Ingestion) runs rarely — only when your documents are added or updated — and its whole job is to fill up the yellow Vector Database box. The bottom row (Query Time) runs constantly — once per user question — and its whole job is to search that same yellow box for the handful of chunks most relevant to *this specific* question, then hand them to the LLM as extra context before it answers. The dotted arrow is the hinge connecting the two: nothing in the bottom row can work until the top row has run at least once.
 
 ### Practical Example (Conceptual Python — Beginner RAG)
 
@@ -111,22 +104,25 @@ Beginner RAG (embed → search → inject → answer) works for demos but has re
 
 ### Visual Diagram — Production RAG Pipeline
 
-```text
-User Question
-    ↓
-Query Rewriting          ("what about last quarter?" → "Q3 2026 revenue figures")
-    ↓
-Hybrid Search  ──────────┬── Vector (semantic) search
-                         └── Keyword search (BM25)
-    ↓
-Metadata Filtering        (only docs the user is authorized to see, recent dates)
-    ↓
-Reranking                 (precise re-scoring of top candidates)
-    ↓
-Context Compression       (trim/summarize before injecting)
-    ↓
-LLM  → Grounded Answer (with citations back to source documents)
+```mermaid
+flowchart TD
+    Q([User Question]) --> QR["Query Rewriting<br/>('what about last quarter?' →<br/>'Q3 2026 revenue figures')"]
+    QR --> HS{Hybrid Search}
+    HS --> VS[Vector / semantic search]
+    HS --> KS[Keyword search / BM25]
+    VS --> MF[Metadata Filtering<br/>authorized docs, recent dates]
+    KS --> MF
+    MF --> RR[Reranking:<br/>precise re-scoring of top candidates]
+    RR --> CC[Context Compression:<br/>trim/summarize before injecting]
+    CC --> LLM[LLM]
+    LLM --> Ans([Grounded Answer<br/>with citations])
+
+    style Q fill:#e0e7ff,stroke:#4338ca
+    style Ans fill:#dcfce7,stroke:#16a34a
+    style HS fill:#fef3c7,stroke:#d97706
 ```
+
+**How to read this graph:** compare this to the simple two-row diagram earlier in this module — every extra box here exists to fix one specific weakness of the beginner pipeline. Notice the fork at "Hybrid Search": the question is searched two different ways *at the same time* (semantic meaning via vectors, exact keyword matches via BM25) and both result sets flow back together into "Metadata Filtering" — that fork-and-rejoin is what lets this pipeline catch both fuzzy conceptual questions and exact-code/ID lookups that pure vector search alone would miss (Lesson 10.3). Everything downstream of the fork narrows and cleans up the candidates step by step until only the most relevant, permitted, compressed context reaches the LLM.
 
 ### Practical Example — Citing Sources
 

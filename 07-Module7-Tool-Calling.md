@@ -59,20 +59,20 @@ Why not let the LLM just do the math itself? LLMs generate text by predicting li
 
 ### Visual Diagram
 
-```text
-User:
-"What's the weather in Pune?"
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as Agent (LLM)
+    participant T as Weather Tool
 
-Agent
-   ↓
-Decides weather information is needed
-   ↓
-Calls Weather Tool  → weather_tool(city="Pune")
-   ↓
-Receives Data       → {"city": "Pune", "temp_c": 29, "condition": "Sunny"}
-   ↓
-Generates Answer     → "It's currently sunny in Pune, 29°C."
+    U->>A: "What's the weather in Pune?"
+    A->>A: Decides weather info is needed
+    A->>T: weather_tool(city="Pune")
+    T-->>A: {"temp_c": 29, "condition": "Sunny"}
+    A->>U: "It's currently sunny in Pune, 29°C."
 ```
+
+**How to read this graph:** this is a *sequence diagram* — time flows top to bottom, and each arrow is a message passed between one of the three participants (User, Agent, Tool). The key thing to notice is that the Agent never talks to the Tool's underlying weather service directly in a way the user sees — the User only ever sees the first arrow (their question) and the last arrow (the final answer). Everything in between — deciding a tool is needed, calling it, and receiving structured data back — happens inside the agent's own loop from Module 6, invisible to the user unless you explicitly choose to show it (as we do throughout this course, for teaching purposes).
 
 ### Tool Schema Example
 

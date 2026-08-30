@@ -50,25 +50,27 @@ Semantic Memory
 
 ### Visual Diagram
 
-```text
-                     AGENT MEMORY SYSTEM
-┌─────────────────────────────────────────────────────────────┐
-│  Working Memory (current context window)                    │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ Current goal, recent tool results, active plan         │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                                │
-│  Short-Term / Conversation Memory                            │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ This session's message history                         │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                                │
-│  Long-Term Memory (persisted across sessions)                │
-│  ┌─────────────────────┐   ┌─────────────────────────────┐  │
-│  │ Semantic (facts)     │   │ Episodic (past interactions) │  │
-│  └─────────────────────┘   └─────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Agent["AGENT MEMORY SYSTEM"]
+        direction TB
+        WM["Working Memory<br/>(current context window)<br/>Current goal, recent tool<br/>results, active plan"]
+        STM["Short-Term / Conversation Memory<br/>This session's message history"]
+        subgraph LTM["Long-Term Memory (persisted across sessions)"]
+            direction LR
+            SEM["Semantic<br/>(facts)"]
+            EPI["Episodic<br/>(past interactions)"]
+        end
+        WM --> STM --> LTM
+    end
+
+    style WM fill:#e0e7ff,stroke:#4338ca
+    style STM fill:#fef3c7,stroke:#d97706
+    style SEM fill:#dcfce7,stroke:#16a34a
+    style EPI fill:#dcfce7,stroke:#16a34a
 ```
+
+**How to read this graph:** think of this as three concentric rings of "how long information sticks around," ordered top to bottom by lifespan. Working memory (blue) only exists for the current LLM call and vanishes the instant that call ends. Short-term memory (yellow) survives for the length of one conversation session but is gone once the session ends — unless something in it gets explicitly promoted downward. Long-term memory (green) is the only tier that survives across entirely separate sessions, and it's split into two flavors: semantic (general facts, like "the user prefers Python") and episodic (specific remembered events, like "the user asked about bakery chatbots on Monday"). The arrows show the *only* way information moves between tiers: something must be deliberately written down and promoted — nothing crosses a boundary automatically, which is exactly the point made in the next section.
 
 ---
 

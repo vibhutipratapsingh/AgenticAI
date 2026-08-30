@@ -17,36 +17,31 @@ This capstone synthesizes every module into one production-style system. It shou
 
 ## System Architecture
 
-```text
-                              User (Web UI)
-                                    │
-                                    ▼
-                          Backend API (auth, rate limits)
-                                    │
-                                    ▼
-                          Task Planner Service
-                        (decomposes goal → task list)
-                                    │
-                                    ▼
-                          Agent Orchestrator
-              (Supervisor pattern, Module 15, Pattern 1)
-                                    │
-        ┌───────────────┬──────────┴──────────┬───────────────┐
-        ▼               ▼                     ▼               ▼
-  Research Agent   Execution Agent      Approval Gateway   Reporting Agent
-  (gathers info)   (calls external      (Module 18: pauses  (summarizes
-                    tools/APIs)          on high-risk        progress/results)
-                                         actions)
-        │               │                     │               │
-        └───────────────┴──────────┬──────────┴───────────────┘
-                                    ▼
-                       Shared State & Memory Store
-                    (Postgres + Vector DB, Module 16, 9)
-                                    │
-                                    ▼
-                          Monitoring & Logging
-                    (structured logs, dashboards, alerts — Module 20)
+```mermaid
+flowchart TD
+    U([User: Web UI]) --> API["Backend API<br/>(auth, rate limits)"]
+    API --> Planner["Task Planner Service<br/>(decomposes goal → task list)"]
+    Planner --> Orch["Agent Orchestrator<br/>(Supervisor pattern, Module 15.1)"]
+
+    Orch --> Res["Research Agent<br/>(gathers info)"]
+    Orch --> Exec["Execution Agent<br/>(calls external tools/APIs)"]
+    Orch --> Appr["Approval Gateway<br/>(Module 18: pauses on high-risk actions)"]
+    Orch --> Rep["Reporting Agent<br/>(summarizes progress/results)"]
+
+    Res --> Store[("Shared State & Memory Store<br/>Postgres + Vector DB")]
+    Exec --> Store
+    Appr --> Store
+    Rep --> Store
+
+    Store --> Mon["Monitoring & Logging<br/>(structured logs, dashboards, alerts)"]
+
+    style U fill:#e0e7ff,stroke:#4338ca
+    style Orch fill:#fce7f3,stroke:#be185d
+    style Appr fill:#fee2e2,stroke:#dc2626
+    style Store fill:#fef3c7,stroke:#d97706
 ```
+
+**How to read this graph:** trace a goal from top to bottom — it's decomposed into tasks *before* it ever reaches the multi-agent layer, which is why the Task Planner sits above the Orchestrator rather than being one of the four specialist agents. Notice the red "Approval Gateway" box is a peer of the other three agents, not a filter every agent must pass through individually — this matches Module 18's design: only actions the Execution Agent classifies as medium-risk-or-higher get routed through it, everything else flows straight to the shared store. Every agent — including the gateway — writes to the same yellow Shared State & Memory Store, which is what lets the Reporting Agent produce a coherent final report without needing to talk to the other three agents directly.
 
 ---
 

@@ -21,21 +21,21 @@ Everything covered so far runs conceptually as a script. To become a real produc
 
 ### Visual Diagram
 
-```text
-User
- ↓
-Frontend (web/mobile app)
- ↓
-Backend API (auth, request validation, rate limiting)
- ↓
-Agent Orchestrator (runs the agent loop: think → act → observe)
- ↓
- ┌─────────┬─────────┬─────────┐
- ↓         ↓         ↓
-LLM      Tools     Database
-(brain)  (external  (state, memory,
-          actions)   logs, users)
+```mermaid
+flowchart TD
+    U([User]) --> FE[Frontend<br/>web/mobile app]
+    FE --> API[Backend API<br/>auth, validation, rate limiting]
+    API --> Orch["Agent Orchestrator<br/>(think → act → observe)"]
+    Orch --> LLM["LLM<br/>(brain)"]
+    Orch --> T["Tools<br/>(external actions)"]
+    Orch --> DB[("Database<br/>state, memory, logs, users")]
+
+    style U fill:#e0e7ff,stroke:#4338ca
+    style Orch fill:#fce7f3,stroke:#be185d
+    style DB fill:#fef3c7,stroke:#d97706
 ```
+
+**How to read this graph:** everything above the pink "Agent Orchestrator" box is ordinary web-application plumbing you'd build for *any* product — the orchestrator is the only box that's specific to agentic AI, and it's the one that fans out to the three supporting systems below it (the LLM for reasoning, Tools for taking action, and the Database for remembering). If you've built a normal web app before, the top half of this diagram should look completely familiar; everything genuinely new that this course teaches lives in the bottom half.
 
 ### Component Responsibilities
 
@@ -99,15 +99,23 @@ Agent systems can be resource-intensive: many LLM calls per task, potentially lo
 
 ### Visual Diagram
 
-```text
-User submits task
-   ↓
-API immediately returns: {"task_id": "abc123", "status": "queued"}
-   ↓
-Task Queue → Worker picks up task → Runs agent loop → Saves result
-   ↓
-User polls (or gets a webhook/notification): {"status": "done", "result": ...}
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant API as Backend API
+    participant Q as Task Queue
+    participant W as Worker (Agent Loop)
+
+    U->>API: Submit task
+    API-->>U: {"task_id": "abc123", "status": "queued"}
+    API->>Q: enqueue task
+    Q->>W: worker picks up task
+    W->>W: runs agent loop, saves result
+    U->>API: poll GET /goals/abc123
+    API-->>U: {"status": "done", "result": ...}
 ```
+
+**How to read this graph:** the crucial detail is that the API's reply to the user arrives almost instantly ("queued"), *before* the actual agent work has even started — the User's HTTP connection is never held open for the minutes an agent loop might take. The real work happens later, off to the side, in the Worker lane, and the User finds out it's done through a separate follow-up request. This is the asynchronous pattern referenced throughout Module 20.4 — contrast it with a naive design where the User's request would just hang until the whole agent loop finished.
 
 ---
 

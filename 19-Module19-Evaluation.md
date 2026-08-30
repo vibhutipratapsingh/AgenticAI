@@ -44,7 +44,18 @@ Traditional software testing checks for exact expected outputs. Agents are non-d
 | Average Cost    | $0.04       |
 | Average Latency | 4.2 seconds |
 
-*How to read this:* a 92% task success rate with a 96% tool accuracy suggests most failures aren't from picking the wrong tools — the gap (96% vs 92%) points toward failures in reasoning/synthesis after tools succeeded, which is where you'd focus debugging effort next.
+```mermaid
+xychart-beta
+    title "Task Success Rate vs. Tool Accuracy Across Evaluation Runs"
+    x-axis ["Run 1", "Run 2", "Run 3", "Run 4", "Run 5"]
+    y-axis "Percent" 80 --> 100
+    line "Task Success" [90, 91, 88, 93, 92]
+    line "Tool Accuracy" [95, 96, 95, 97, 96]
+```
+
+**How to read this graph:** two lines tracked across five evaluation runs, not just one snapshot number — this is what "reliability" (Module 19's fifth metric) actually looks like visually: consistency across repeated runs, not a single lucky demo. Notice the Tool Accuracy line consistently sits above the Task Success line by 4-5 points in every run — that persistent, stable gap (not a one-off dip) is the signal worth investigating: the agent is reliably picking the right tools, so the recurring failure source is most likely in how it synthesizes tool results into a final answer, not in tool selection itself.
+
+*How to read the table:* a 92% task success rate with a 96% tool accuracy suggests most failures aren't from picking the wrong tools — the gap (96% vs 92%) points toward failures in reasoning/synthesis after tools succeeded, which is where you'd focus debugging effort next.
 
 ---
 

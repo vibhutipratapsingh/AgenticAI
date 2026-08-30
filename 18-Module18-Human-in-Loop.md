@@ -49,18 +49,21 @@ Not all actions carry equal risk. A practical approach is to classify actions in
 
 ### Visual Diagram — Risk-Based Gating
 
-```text
-Agent decides on an action
-       ↓
-Classify risk level
-       ↓
-   ┌───────┬────────┬─────────┬──────────┐
-   Low    Medium    High     Critical
-   │        │         │          │
-  Execute  Execute   PAUSE →   PAUSE →
-  directly + log      request   request
-                      approval  multi-approval
+```mermaid
+flowchart TD
+    A([Agent decides on an action]) --> C{Classify risk level}
+    C -- Low --> L[Execute directly]
+    C -- Medium --> M[Execute + log]
+    C -- High --> H["PAUSE → request<br/>human approval"]
+    C -- Critical --> X["PAUSE → request<br/>multi-person approval"]
+
+    style L fill:#dcfce7,stroke:#16a34a
+    style M fill:#dcfce7,stroke:#16a34a
+    style H fill:#fef3c7,stroke:#d97706
+    style X fill:#fee2e2,stroke:#dc2626
 ```
+
+**How to read this graph:** the color coding tracks risk directly — green means "just let it run," amber means "pause and wait for one person," red means "pause and wait for more than one person." Notice only two of the four branches (Low, Medium) let the agent act immediately; the other two both hit a hard "PAUSE" before anything actually executes. This is the mechanism that makes Module 18.2's risk table concrete: an agent using this flowchart never has to guess whether to ask a human — the risk classification decides it automatically.
 
 ---
 
