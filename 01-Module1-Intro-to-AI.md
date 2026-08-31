@@ -66,14 +66,13 @@ It's a fair suspicion, because the word "AI" genuinely is overused in marketing.
 
 ### Visual Diagram
 
-```text
-             INPUT                         OUTPUT
-Traditional:  "2+2"     → [fixed rules]  →   "4"
-ML:           email     → [learned model]→   "spam" / "not spam"
-DL:           photo     → [neural net]   →   "cat"
-GenAI:        prompt    → [generative model] → new image / new text
-LLM:          "Explain gravity simply" → [LLM] → a written explanation
-```
+| Approach | Input | Mechanism | Output |
+|---|---|---|---|
+| Traditional | `"2+2"` | fixed rules | `"4"` |
+| ML | email | learned model | `"spam"` / `"not spam"` |
+| DL | photo | neural net | `"cat"` |
+| GenAI | prompt | generative model | new image / new text |
+| LLM | `"Explain gravity simply"` | LLM | a written explanation |
 
 Notice the pattern across every row: the **INPUT → OUTPUT shape looks almost identical** (something goes in, something comes out), but what happens in the middle box is completely different in kind, not just in complexity. A fixed-rules system's middle box is a set of instructions a human wrote in advance and can point to exactly. A learned model's middle box is a set of numbers (weights) that were adjusted automatically by exposure to data, and no single human wrote down — or could easily explain — the exact reasoning behind any one specific prediction. This "the middle box is opaque, learned, and probabilistic rather than hand-written and exact" distinction is the single most important mental shift to make in this lesson, and it's why later modules (especially Module 17 on reliability) treat "the model might be wrong even when it sounds confident" as a first-class design concern rather than an edge case.
 

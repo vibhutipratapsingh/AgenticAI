@@ -254,6 +254,13 @@ flowchart TD
 | Router | Classify-then-dispatch | Low | High | Clearly distinct request categories |
 
 ```mermaid
+---
+config:
+  xyChart:
+    chartOrientation: horizontal
+    width: 700
+    height: 450
+---
 xychart-beta
     title "Cost vs. Debuggability by Pattern (5 = highest)"
     x-axis ["Supervisor", "Hierarchical", "Peer-to-Peer", "Pipeline", "Debate", "Critic", "Router"]

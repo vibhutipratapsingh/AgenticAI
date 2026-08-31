@@ -293,6 +293,13 @@ Long-form content generation, complex reports, iterative code development.
 | Iterative Improvement | Getting large outputs right in one pass | Medium-high | Long-form content, complex code |
 
 ```mermaid
+---
+config:
+  xyChart:
+    chartOrientation: horizontal
+    width: 700
+    height: 400
+---
 xychart-beta
     title "Relative Cost vs. Relative Rigor of Each Pattern"
     x-axis ["ReAct", "Plan-and-Execute", "Reflection", "Critique & Revise", "Tree-Based", "Iterative Improvement"]

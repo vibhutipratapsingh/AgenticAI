@@ -142,6 +142,13 @@ flowchart TD
 ## Difficulty Curve Across the Course
 
 ```mermaid
+---
+config:
+  xyChart:
+    chartOrientation: horizontal
+    width: 700
+    height: 500
+---
 xychart-beta
     title "Relative Difficulty by Part"
     x-axis ["Python", "Foundations", "Intro to Agents", "First Agent", "Memory", "RAG", "Planning", "Frameworks", "Multi-Agent", "Advanced", "Eval", "Production"]
