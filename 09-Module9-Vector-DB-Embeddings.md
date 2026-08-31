@@ -42,10 +42,10 @@ quadrantChart
     title Meaning Map (simplified to 2D)
     x-axis Low --> High
     y-axis Low --> High
-    quadrant-1 AI / ML Topics
+    quadrant-1 AI/ML Topics
     quadrant-2 Sports Topics
     quadrant-3 Cooking Topics
-    quadrant-4 (unused)
+    quadrant-4 Unused
     "neural networks": [0.75, 0.8]
     "LLMs": [0.7, 0.65]
     "machine learning models": [0.85, 0.7]
